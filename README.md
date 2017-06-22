@@ -1,2 +1,2 @@
-# mysql_hint_web
-the web for mysql tool
+# mysql_hint
+include the web for mysql tool
