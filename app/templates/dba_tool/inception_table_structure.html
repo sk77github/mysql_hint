@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}MySQL dev 自动化 与 上线检测系统{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+<div class="breadcrumbs" id="breadcrumbs">        
+    <script type="text/javascript">
+try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+    </script>
+
+    <ul class="breadcrumb">
+        <li>
+        <i class="icon-home home-icon"></i>
+        <a href="/">Home</a>
+        </li>
+
+        <li>
+        <a href="/ldapconfig">运维工具</a>
+        </li>
+        <li class="active">MySQL dev 自动化 与 上线检测系统</li>
+    </ul><!-- .breadcrumb -->
+
+</div>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+
+<div class="page-content">
+<div class="page-header">
+    <h1>MySQL dev 自动化 与 上线检测系统<small></h1>
+</div>
+
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="panel panel-primary">
+            <div class="panel-heading">请输入需要执行的SQL</div>
+            <div class="panel-body">
+<form class="form-horizontal" role="form" action="inception_table_structure" method='post'>
+    <div class="form-group">
+       请输入dev环境mysql ip: 
+      <input type="text" placeholder="dev mysql ip" name="mysql_host" />
+      <br />
+       请输入dev环境mysql 端口: 
+      <input type="text" placeholder="dev mysql port" name="mysql_port" />
+      <br />
+       请输入dev环境mysql 用户: 
+      <input type="text" placeholder="dev mysql user" name="mysql_user" />
+      <br />
+       请输入dev环境mysql 密码: 
+      <input type="password" placeholder="dev mysql password" name="mysql_password">
+      <br />
+       请输入dev环境mysql 库名: 
+      <input type="text" placeholder="dev mysql database name" name="mysql_database">
+      <br />
+       请选择检测行为: 
+      <br />
+      <input type="radio" name="mysql_action" value="check" /> 只检测不执行
+      <br />
+      <input type="radio" name="mysql_action" checked="checked" value="execute" /> 既检测又执行
+      <br />
+      <br />
+      请在下方输入需要执行的SQL:
+      <br />
+      <div class="col-sm-9">
+          <textarea id="form-field-2" placeholder="mysql statements" class="col-xs-10 col-sm-12" name="mysql_structure" rows="15">{{abc}}</textarea>
+      </div>
+    </div>
+
+    <div class="space-4"></div>
+    <div class="clearfix form-actions">
+    <div class="col-md-offset-0 col-md-5">
+        <button class="btn btn-info" type="submit">
+            <i class="icon-ok bigger-110"></i>
+            Submit
+        </button>
+        &nbsp; &nbsp; &nbsp;
+        <button class="btn" type="reset">
+            <i class="icon-undo bigger-110"></i>
+            Reset
+        </button>
+    </div>
+    </div>
+
+<div class="hr hr-24"></div>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+{% if sql_review != {} %}
+<div class="col-md-9">
+<div class="panel-footer">
+    <table class="table" style="width:1300px;">
+        <tr>
+            <th>序号</th>
+            <th>自动化执行过程</th>
+            <th>错误码</th>
+            <th>自动化执行状态</th>
+            <th style="width:500px;">检测信息</th>
+            <th style="width:400px;">SQL语句</th>
+            <th>预估影响行数</th>
+          <!--
+            <th>sequence</th>
+            <th>backup_dbname</th>
+            <th>execute_time</th>
+            <th>sqlsha1</th>
+          -->
+        </tr>
+        {% for line in sql_review %}
+        <tr>
+            <th>{{line[0]}}</th>
+            <th>
+                 {% if line[1] == 'NONE' %}未处理{% endif %}
+                 {% if line[1] == 'RERUN' %}上下文相关已执行{% endif %}
+                 {% if line[1] == 'CHECKED' %}已检测{% endif %}
+                 {% if line[1] == 'EXECUTED' %}已执行{% endif %}
+            </th>
+            <th>
+                 {% if line[2] == 0 %}成功{% endif %}
+                 {% if line[2] == 1 %}<font color="#ffff00">警告</font>{% endif %}
+                 {% if line[2] == 2 %}<font color="#ff0000">错误</font>{% endif %}
+            </th>
+            <th>
+                 {% if line[3] == 'Audit completed' %}已检测未执行{% endif %}
+                 {% if line[3] == 'Execute Successfully' %}执行成功{% endif %}
+                 {% if line[3] == 'Execute failed' %}执行失败{% endif %}
+            </th>
+            <th>{{line[4].replace('.','<br><br>')|safe}}</th>
+            <th>{{line[5]}}</th>
+         <!--
+            <th>{{line[6]}}</th>
+            <th>{{line[7]}}</th>
+            <th>{{line[8]}}</th>
+            <th>{{line[9]}}</th>
+         -->
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+{% endif %}
+
+
+{% if pagination %}
+<tr>
+    <div class="dataTables_paginate paging_bootstrap">
+    <div class="panel-footer"></div>
+        {{ macros.pagination_widget(pagination, '.servers') }}</div>
+</tr>
+{% endif %}
+</div>
+</div>                                                                                                                                                                                                                                                                                                                                                                                                                       </div>                                                                                                                                                                         </div>
+
+
+{% endblock %}
